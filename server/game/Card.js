@@ -548,8 +548,14 @@ class Card extends PlayableObject {
         if (this.hasKeyword('overkill')) {
             effects.push('overkill');
         }
+
         return effects;
     }
+
+    hasAcquiredEffect() {
+        return this.effects.some(e => e.context.source !== this);
+    }
+
     checkRestrictions(actionType, context = null) {
         return (
             super.checkRestrictions(actionType, context) &&
@@ -1208,6 +1214,7 @@ class Card extends PlayableObject {
             }),
             flags: this.getFlags(),
             effects: this.getEffectSummary(),
+            acquiredEffect: this.hasAcquiredEffect(),
             armor: this.armor,
             life: this.life,
             guarded: this.usedGuardThisRound,
