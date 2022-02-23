@@ -540,6 +540,16 @@ class Card extends PlayableObject {
         return flags;
     }
 
+    getEffectSummary() {
+        var effects = [];
+        if (this.hasKeyword('terrifying')) {
+            effects.push('terrifying');
+        }
+        if (this.hasKeyword('overkill')) {
+            effects.push('overkill');
+        }
+        return effects;
+    }
     checkRestrictions(actionType, context = null) {
         return (
             super.checkRestrictions(actionType, context) &&
@@ -1157,7 +1167,6 @@ class Card extends PlayableObject {
                 facedown: true,
                 uuid: this.uuid,
                 tokens: this.tokens,
-                flags: this.getFlags(),
                 armor: this.armor,
                 isConjuration: ConjuredCardTypes.includes(this.type),
                 ...selectionState
@@ -1198,6 +1207,7 @@ class Card extends PlayableObject {
                 return die.getSummary(activePlayer);
             }),
             flags: this.getFlags(),
+            effects: this.getEffectSummary(),
             armor: this.armor,
             life: this.life,
             guarded: this.usedGuardThisRound,

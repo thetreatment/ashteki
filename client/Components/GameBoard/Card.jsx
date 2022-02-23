@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import 'jquery-migrate';
 import { useDrag } from 'react-dnd';
+import { effectUrl } from '../../util';
 
 import CardMenu from './CardMenu';
 import CardCounters from './CardCounters';
@@ -273,6 +274,19 @@ const Card = ({
         }
         return '';
     };
+    const getEffectIcons = (card) => {
+        let effects =
+            card.effects &&
+            card.effects.map((effectName) => {
+                let pbImage = effectUrl(effectName);
+                return (
+                    <div className={'effect effect-' + effectName} key={'effect-' + effectName}>
+                        <img src={pbImage} title={effectName} />
+                    </div>
+                );
+            });
+        return effects;
+    }
 
     const getCard = () => {
         if (!card) {
@@ -313,91 +327,99 @@ const Card = ({
         let image = card ? (
             <div className={imageClass}>
                 <CardImage card={card} cardBack={cardBack} />
-                {getChainIcon(card)}
-                {getBoostedFlags(card)}
-            </div>
-        ) : null;
-        let dice =
-            card.dieUpgrades && card.dieUpgrades.length > 0
-                ? card.dieUpgrades.map((d) => (
-                    <Die key={'dup-' + d.uuid} die={d} onClick={onDieClick} />
-                ))
-                : null;
-
-        return (
-            <div className='card-frame' ref={drag}>
-                {getDragFrame(image)}
-                {getCardOrdering()}
-                <div
-                    tabIndex={0}
-                    className={cardClass}
-                    onMouseOver={
-                        !disableMouseOver && !isFacedown() && onMouseOver
-                            ? () => onMouseOver(card)
-                            : undefined
-                    }
-                    onMouseOut={!disableMouseOver && !isFacedown() ? onMouseOut : undefined}
-                    onClick={(event) => onCardClicked(event, card)}
-                >
-                    <div>
-                        <span className='card-name'>{card.name}</span>
-                        {image}
-                    </div>
-                    {showCounters() && <CardCounters counters={getCountersForCard(card)} />}
-                    <div className='die-upgrades'>{dice}</div>
+<<<<<<< HEAD
+            { getChainIcon(card)
+    }
+=======
+                <div className='effects'>
+                    {getEffectIcons(card)}
                 </div>
-                {shouldShowMenu() && (
-                    <CardMenu
-                        menu={card.menu}
-                        side={side}
-                        onMenuItemClick={(menuItem) => {
-                            onMenuItemClick && onMenuItemClick(card, menuItem);
-                            setShowMenu(!showMenu);
-                        }}
-                    />
-                )}
+
+>>>>>>> 0c56eee77... first draft examples of effect icons
+    { getBoostedFlags(card) }
+            </div >
+        ) : null;
+let dice =
+    card.dieUpgrades && card.dieUpgrades.length > 0
+        ? card.dieUpgrades.map((d) => (
+            <Die key={'dup-' + d.uuid} die={d} onClick={onDieClick} />
+        ))
+        : null;
+
+return (
+    <div className='card-frame' ref={drag}>
+        {getDragFrame(image)}
+        {getCardOrdering()}
+        <div
+            tabIndex={0}
+            className={cardClass}
+            onMouseOver={
+                !disableMouseOver && !isFacedown() && onMouseOver
+                    ? () => onMouseOver(card)
+                    : undefined
+            }
+            onMouseOut={!disableMouseOver && !isFacedown() ? onMouseOut : undefined}
+            onClick={(event) => onCardClicked(event, card)}
+        >
+            <div>
+                <span className='card-name'>{card.name}</span>
+                {image}
             </div>
-        );
+            {showCounters() && <CardCounters counters={getCountersForCard(card)} />}
+            <div className='die-upgrades'>{dice}</div>
+        </div>
+        {shouldShowMenu() && (
+            <CardMenu
+                menu={card.menu}
+                side={side}
+                onMenuItemClick={(menuItem) => {
+                    onMenuItemClick && onMenuItemClick(card, menuItem);
+                    setShowMenu(!showMenu);
+                }}
+            />
+        )}
+    </div>
+);
     };
 
-    const getStatusClass = () => {
-        if (!card) {
-            return undefined;
-        }
-
-        if (card.selected) {
-            return 'selected';
-        } else if (card.selectable) {
-            // if (card.isAttacker) return 'attacker-' + side + ' selectable ';
-            return 'selectable';
-            // } else if (card.isAttacker) {
-            //     return 'attacker-' + side;
-            // } else if (card.isDefender) {
-            //     return 'defender-' + side;
-        } else if (card.new) {
-            return 'new';
-        }
-
+const getStatusClass = () => {
+    if (!card) {
         return undefined;
-    };
-
-    let styleCopy = Object.assign({}, style);
-    if (card.upgrades) {
-        styleCopy.top = card.upgrades.length * (15 * getCardSizeMultiplier());
-    }
-    if (wrapped) {
-        return (
-            <div className={'card-wrapper'} style={style}>
-                {getAltIcon(card)}
-
-                {getCard()}
-                {getupgrades()}
-                {renderUnderneathCards()}
-            </div>
-        );
     }
 
-    return getCard();
+    if (card.selected) {
+        return 'selected';
+    } else if (card.selectable) {
+        // if (card.isAttacker) return 'attacker-' + side + ' selectable ';
+        return 'selectable';
+        // } else if (card.isAttacker) {
+        //     return 'attacker-' + side;
+        // } else if (card.isDefender) {
+        //     return 'defender-' + side;
+    } else if (card.new) {
+        return 'new';
+    }
+
+    return undefined;
+};
+
+let styleCopy = Object.assign({}, style);
+if (card.upgrades) {
+    styleCopy.top = card.upgrades.length * (15 * getCardSizeMultiplier());
+}
+if (wrapped) {
+    return (
+        <div className={'card-wrapper'} style={style}>
+            {getAltIcon(card)}
+
+            {getCard()}
+            {getupgrades()}
+            {renderUnderneathCards()}
+        </div>
+    );
+}
+
+return getCard();
 };
 
 Card.displayName = 'Card';
